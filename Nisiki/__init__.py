@@ -16,7 +16,6 @@ access_token = os.environ['ACCESS_TOKEN']
 channel_secret = os.environ['CHANNEL_SECRET']
 
 kintone_endpoint = os.environ['KINTONE_URL']
-kintone_id = os.environ['APPID']
 kitone_token = os.environ['KINTONE_TOKEN']
 
 # インスタンスを定義

@@ -2,12 +2,12 @@ import requests
 import time
 import logging
 
-APPID = 1
+
 
 # import data into kinto db
 def make_params(name, contents, line_id, category):
     PARAMS = {
-        "app": APPID,
+        "app": 1,
         "record": {
             "name": {
                 "value": name

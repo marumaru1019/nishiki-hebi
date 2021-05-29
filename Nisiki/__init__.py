@@ -20,8 +20,6 @@ handler = WebhookHandler(channel_secret)
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
-    logging.info(access_token)
-    logging.info(channel_secret)
     logging.info(req.headers)
 
     if req.headers.get('x-line-signature'):

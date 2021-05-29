@@ -9,9 +9,15 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
+from kintone import *
+
 # 環境変数を取得
 access_token = os.environ['ACCESS_TOKEN']
 channel_secret = os.environ['CHANNEL_SECRET']
+
+kintone_endpoint = os.environ['KINTONE_URL']
+kintone_id = os.environ['APPID']
+kitone_token = os.environ['KINTONE_TOKEN']
 
 # インスタンスを定義
 line_bot = LineBotApi(access_token)
@@ -42,6 +48,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    content = event.message.text
+    user_id = event.source.user_id
+    profile = line_bot_api.get_profile(event.source.user_id)
+    user_name = profile.display_name
+
+    params = make_params(user_name, contents, user_id, 1)
+    # input data into kintone database
+    input_data(kintone_endpoint, kintone_token, params)
+
     line_bot.reply_message(
         event.reply_token,
-        TextSendMessage(text="動作確認"))
+        TextSendMessage(text=content))

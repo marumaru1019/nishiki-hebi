@@ -12,7 +12,6 @@ env:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
     environment: dev
     runs-on: ubuntu-18.04
     steps:

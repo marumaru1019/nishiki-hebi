@@ -2,8 +2,6 @@ import requests
 import time
 import logging
 
-
-
 # import data into kinto db
 def make_params(name, contents, line_id, category):
     PARAMS = {

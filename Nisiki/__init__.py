@@ -101,9 +101,21 @@ def handle_message(event):
         logging.info(os.listdir())
         message = az.response_message([content])
 
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=message))
+        if len(content) >= 2:
+            logging.info("".join([content[-2], content[-1]]))
+
+            if "".join([content[-2], content[-1]]) == "ゆに" or "".join([content[-2], content[-1]]) == "ユニ":
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=message+"ゆにゆに"))
+            else:
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=message))
+        else:
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=message))
     #############################################
 
 @handler.add(PostbackEvent)

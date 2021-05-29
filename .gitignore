@@ -131,4 +131,4 @@ local.settings.json
 
 .env.sh
 sample.py
-demo.ipynb
+*.ipynb

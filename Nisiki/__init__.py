@@ -44,4 +44,4 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 def handle_message(event):
     line_bot.reply_message(
         event.reply_token,
-        TextSendMessage(text=event.message.text))
+        TextSendMessage(text="動作確認"))

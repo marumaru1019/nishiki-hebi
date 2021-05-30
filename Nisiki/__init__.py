@@ -144,17 +144,22 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text=message))
 
-    # 質問対応
-    elif "Q学業" in content or "Q内定" in content or "Qプライベート" in content or "Qその他" in content:
-        messages = content.split("：")
-        if len(messages) < 2:
-            message1 = "質問のフォーマットが間違っているよ😭"
-            message2 = "もう一度質問を押すから質問してみてね！"
+    # # 質問対応
+    # elif "Q学業" in content or "Q内定" in content or "Qプライベート" in content or "Qその他" in content:
+    #     if len(content) < 2:
+    #         message1 = "質問のフォーマットが間違っているよ😭"
+    #         message2 = "もう一度質問を押すから質問してみてね！"
 
-        elif len(messages) >= 2:
-            category, element = re.split('[:：]', messages, 1)
-
-            logging.info("質問内容を保存します。")
+    #     elif len(content) >= 2:
+    #         category, element = re.split('[:：]', content, 1)
+    elif re.split('[:：]', content, 1)[0] in {'Q学業', 'Q内定', 'Qプライベート', 'Qその他'}:
+        li = re.split('[:：]', content, 1)
+        if len(li) != 2:
+            message1 = '質問のフォーマットが間違っているよ😭'
+            message2 = 'もう一度質問を押すから質問してみてね！'
+        else:
+            category, element = li
+            logging.info('質問内容を保存します。')
             if "学業" in category:
                 category = "学業"
             elif "内定" in category:

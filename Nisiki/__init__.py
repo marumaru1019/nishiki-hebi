@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import re
 
 import azure.functions as func
 from linebot import LineBotApi, WebhookHandler
@@ -142,6 +143,43 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=message))
+
+    # # 質問対応
+    # elif "Q学業" in content or "Q内定" in content or "Qプライベート" in content or "Qその他" in content:
+    #     if len(content) < 2:
+    #         message1 = "質問のフォーマットが間違っているよ😭"
+    #         message2 = "もう一度質問を押すから質問してみてね！"
+
+    #     elif len(content) >= 2:
+    #         category, element = re.split('[:：]', content, 1)
+    elif re.split('[:：]', content, 1)[0] in {'Q学業', 'Q内定', 'Qプライベート', 'Qその他'}:
+        li = re.split('[:：]', content, 1)
+        if len(li) != 2:
+            message1 = '質問のフォーマットが間違っているよ😭'
+            message2 = 'もう一度質問を押すから質問してみてね！'
+        else:
+            category, element = li
+            logging.info('質問内容を保存します。')
+            if "学業" in category:
+                category = "学業"
+            elif "内定" in category:
+                category = "内定"
+            elif "プライベート" in category:
+                category = "プライベート"
+            else:
+                category = "その他"
+            # データベースの保存処理
+            params = q_params(
+                line_name=user_name, line_id=user_id, contents= element, category=category, sub1="", sub2="")
+            q_input(kintone_endpoint, kintone_token, params)
+            logging.info("質問内容を保存しました")
+
+            message1 = f"{user_name}さん、質問をくれてありがとう！"
+            message2 = "ゆにしすちゃんで大事に預かるね😊"
+
+        line_bot_api.reply_message(
+            event.reply_token, [TextSendMessage(text=message1), TextSendMessage(text=message2)])
+
     ################ 自然言語解析 ##################
     else:
         az = AzureNlp()
@@ -180,7 +218,7 @@ def handle_postback(event):
 
     if data in ["学業", "内定", "プライベート", "その他"]:
         message1 = "以下のフォーマットに従って質問をしてね♫"
-        message2 = f"{data}：質問内容"
+        message2 = f"Q{data}：質問内容"
         line_bot_api.reply_message(
             event.reply_token, [TextSendMessage(text=message1), TextSendMessage(text=message2)])
 

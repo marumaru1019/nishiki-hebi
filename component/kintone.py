@@ -5,7 +5,7 @@ import logging
 # import data into kinto db
 
 
-def q_params(line_name, line_id, contents, category="non", sub1="", sub2="", name=""):
+def q_params(line_name, line_id, contents, category="non", sub1="", sub2=""):
     PARAMS = {
         "app": 1,
         "record": {

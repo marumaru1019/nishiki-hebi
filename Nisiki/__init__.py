@@ -68,6 +68,7 @@ def handle_message(event):
     #WARNING: kintone token must set under handle_message
     kintone_endpoint = os.environ['KINTONE_URL']
     kintone_token = os.environ['KINTONE_TOKEN']
+    kintone_token2 = os.environ['KINTONE_TOKEN2']
     content = event.message.text
     user_id = event.source.user_id
     profile = line_bot_api.get_profile(event.source.user_id)
@@ -120,6 +121,21 @@ def handle_message(event):
             FlexSendMessage(alt_text='ニュース', contents=message)
         )
 
+    # 自己紹介用のフォーマット
+    elif "の名前は" in content:
+        try:
+            message = f'あなたの名前は{content.replace("私の名前は","").replace("だよ！","")}だね！\nこれからよろしくね！'
+            logging.info("名前を登録中")
+            params = selfintro_params(
+                line_name=user_name, line_id=user_id, name=content.replace("私の名前は", "").replace("だよ！", ""), ID=user_id)
+            q_input(kintone_endpoint, kintone_token2, params)
+
+        except:
+            message = "自己紹介のフォーマットが間違っているよ😭"
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=message))
+
     ################ 自然言語解析 ##################
     else:
         az = AzureNlp()
@@ -150,12 +166,14 @@ def handle_postback(event):
     #WARNING: kintone token must set under handle_message
     kintone_endpoint = os.environ['KINTONE_URL']
     kintone_token = os.environ['KINTONE_TOKEN']
+    kintone_token2 = os.environ['KINTONE_TOKEN2']
     user_id = event.source.user_id
     profile = line_bot_api.get_profile(event.source.user_id)
     user_name = profile.display_name
     data = event.postback.data
 
     if data in ["学業", "内定", "プライベート", "その他"]:
-        message = "質問内容を記入してください"
+        message1 = "以下のフォーマットに従って質問をしてね♫"
+        message2 = f"{data}：質問内容"
         line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=message))
+            event.reply_token, TextSendMessage(text=[message1, message2]))

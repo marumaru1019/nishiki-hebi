@@ -6,5 +6,6 @@ azure-functions
 line-bot-sdk
 requests
 pandas
-azure-ai-textanalytics
+azure-ai-textanalytic
 beautifulsoup4
+

@@ -168,9 +168,24 @@ def handle_message(event):
                 category = "プライベート"
             else:
                 category = "その他"
+            # subを増やす
+            az = AzureNlp()
+            logging.info("アジュールで読み込みを開始します")
+            keys = az.find_key([element+",o"])
+
+            if len(keys) >= 2:
+                sub1 = keys[0]
+                sub2 = keys[1]
+            elif len(keys) == 1:
+                sub1 = keys[0]
+                sub2 = ""
+            else:
+                sub1 = ""
+                sub2 = ""
+
             # データベースの保存処理
             params = q_params(
-                line_name=user_name, line_id=user_id, contents= element, category=category, sub1="", sub2="")
+                line_name=user_name, line_id=user_id, contents= element, category=category, sub1=sub1, sub2=sub2)
             q_input(kintone_endpoint, kintone_token, params)
             logging.info("質問内容を保存しました")
 

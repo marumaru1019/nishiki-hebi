@@ -1,8 +1,0 @@
-domain: {https://61r93edyrsd5.cybozu.com/k/1/}
-login:
-  id: {abetaiki0427@gmail.com}
-  password: {v1ya6kwx}
-apps:
-  {db-linebot-nishikihebi}:
-    id: {1}
-    token: {uxuJRsQ7jkunko02d9nVQnDSyIJtDmEe2xSGXFEp}

@@ -1,0 +1,125 @@
+{
+    "type": "carousel",
+    "contents": [
+        {
+            "type": "bubble",
+            "size": "micro",
+            "hero": {
+                "type": "image",
+                "url": "https://www.tv-asahi.co.jp/doraemon/cast/img/doraemon.jpg",
+                "size": "full",
+                "aspectMode": "cover",
+                "aspectRatio": "320:213"
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "サンプル1",
+                        "weight": "bold",
+                        "size": "sm",
+                        "wrap": true
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "button",
+                                "action": {
+                                    "type": "uri",
+                                    "label": "記事を読む",
+                                    "uri": "https://www.tv-asahi.co.jp/doraemon/cast/"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "spacing": "sm",
+                "paddingAll": "13px"
+            }
+        },
+        {
+            "type": "bubble",
+            "size": "micro",
+            "hero": {
+                "type": "image",
+                "url": "https://www.tv-asahi.co.jp/doraemon/cast/img/nobita.jpg",
+                "size": "full",
+                "aspectMode": "cover",
+                "aspectRatio": "320:213"
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "サンプル2",
+                        "weight": "bold",
+                        "size": "sm",
+                        "wrap": true
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "button",
+                                "action": {
+                                    "type": "uri",
+                                    "label": "記事を読む",
+                                    "uri": "https://www.amazon.co.jp/%E3%83%95%E3%82%A3%E3%82%AE%E3%83%A5%E3%82%A2%E3%83%BC%E3%83%84ZERO-%E3%83%89%E3%83%A9%E3%81%88%E3%82%82%E3%82%93-STAND-%E7%B4%84250mm-%E5%A1%97%E8%A3%85%E6%B8%88%E3%81%BF%E5%AE%8C%E6%88%90%E5%93%81%E3%83%95%E3%82%A3%E3%82%AE%E3%83%A5%E3%82%A2/dp/B085CH14TB"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "spacing": "sm",
+                "paddingAll": "13px"
+            }
+        },
+        {
+            "type": "bubble",
+            "size": "micro",
+            "hero": {
+                "type": "image",
+                "url": "https://www.tv-asahi.co.jp/doraemon/cast/img/shizuka.jpg",
+                "size": "full",
+                "aspectMode": "cover",
+                "aspectRatio": "320:213"
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "サンプル3",
+                        "weight": "bold",
+                        "size": "sm",
+                        "wrap": true
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "button",
+                                "action": {
+                                    "type": "uri",
+                                    "label": "記事を読む",
+                                    "uri": "https://www.amazon.co.jp/-/en/Spirits-Doraemon-Selection-Approximately-Pre-painted/dp/B084HQ6CHX/ref=pd_lpo_21_img_1/358-5152328-6019449?_encoding=UTF8&pd_rd_i=B084HQ6CHX&pd_rd_r=f6f73248-59bd-4b10-a1b6-4becf4e1a427&pd_rd_w=9V4TA&pd_rd_wg=phLQN&pf_rd_p=dc0198fa-c371-4787-b1e2-96ed0e4d45e8&pf_rd_r=A1G0AFGRF5FBFF3ZF7FC&psc=1&refRID=A1G0AFGRF5FBFF3ZF7FC"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "spacing": "sm",
+                "paddingAll": "13px"
+            }
+        }
+    ]
+}

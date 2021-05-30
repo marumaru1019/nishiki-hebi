@@ -7,3 +7,5 @@ line-bot-sdk
 requests
 pandas
 azure-ai-textanalytics
+beautifulsoup4
+

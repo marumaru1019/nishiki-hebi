@@ -23,5 +23,10 @@ class AzureNlp:
     res_mes = df[df["id"] == mes_id]["text"].values[0]
     return res_mes
 
+  def find_key(self, messages:list):
+    keys = self.client.extract_key_phrases(
+        messages, language="ja")[0].key_phrases
+    return keys
+
 def main():
   az = AzureNlp()

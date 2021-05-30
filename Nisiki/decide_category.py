@@ -1,6 +1,7 @@
 #pip3 install ginza
 #pip3 install sklearn
 #pip3 install numpy
+#pip3 install mlask
 
 
 def decide_category(text):
@@ -32,10 +33,26 @@ def text_analyze(text):
     
     c = collections.Counter(text)
     print(c.most_common(20))
+    
+def emotion_analyzer(text):
+    #ポジネガ分析をする関数(MeCabが入るなら使える)
+    from mlask import MLAsk    
+
+    # mecab -Dで辞書のパスを確認し，引数に渡す(末尾のsys.dicは削除)
+    emotion_analyzer = MLAsk('-d /usr/local/lib/mecab/dic/ipadic/')
+    analyze = emotion_analyzer.analyze(text)
+    
+    return analyze
 
 if __name__ == '__main__':
-    category = decide_category('人事さんに質問です．会社の雰囲気を改めて教えて下さい．')
+    #category = decide_category('人事さんに質問です．会社の雰囲気を改めて教えて下さい．')
     #category = analyze('同期は何人くらい居ますか？')
     #category = analyze('研修についてお聞きしたいです．')
 
-    text_analyze('人事さんに質問です．会社の雰囲気を改めて教えて下さい．')    
+    #text_analyze('人事さんに質問です．会社の雰囲気を改めて教えて下さい．')   
+
+    analyze = emotion_analyzer('ゆにしすちゃん嫌い！')
+    print(analyze)
+    print()
+    PojiNega = analyze['orientation']
+    print(PojiNega)

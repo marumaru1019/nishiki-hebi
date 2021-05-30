@@ -25,6 +25,7 @@ from linebot.models import (
 from component.kintone import *
 from component.azure_nlp import *
 from component.news import *
+from component.tips import *
 
 import requests
 import time
@@ -136,6 +137,11 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text=message))
 
+    elif content == "Tips教えて！":
+        message = get_tips()
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=message))
     ################ 自然言語解析 ##################
     else:
         az = AzureNlp()
@@ -176,4 +182,5 @@ def handle_postback(event):
         message1 = "以下のフォーマットに従って質問をしてね♫"
         message2 = f"{data}：質問内容"
         line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=[message1, message2]))
+            event.reply_token, [TextSendMessage(text=message1), TextSendMessage(text=message2)])
+

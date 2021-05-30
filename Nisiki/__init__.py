@@ -37,23 +37,7 @@ channel_secret = os.environ['CHANNEL_SECRET']
 line_bot_api = LineBotApi(access_token)
 handler = WebhookHandler(channel_secret)
 
-imgs = [
-    "https://www.tv-asahi.co.jp/doraemon/cast/img/nobita.jpg",
-    "https://www.tv-asahi.co.jp/doraemon/cast/img/nobita.jpg",
-    "https://www.tv-asahi.co.jp/doraemon/cast/img/shizuka.jpg"
-]
-
-titles = [
-    "サンプル8",
-    "サンプル9",
-    "サンプル10"
-]
-
-urls = [
-    "https://www.tv-asahi.co.jp/doraemon/cast/",
-    "https://www.amazon.co.jp/%E3%83%95%E3%82%A3%E3%82%AE%E3%83%A5%E3%82%A2%E3%83%BC%E3%83%84ZERO-%E3%83%89%E3%83%A9%E3%81%88%E3%82%82%E3%82%93-STAND-%E7%B4%84250mm-%E5%A1%97%E8%A3%85%E6%B8%88%E3%81%BF%E5%AE%8C%E6%88%90%E5%93%81%E3%83%95%E3%82%A3%E3%82%AE%E3%83%A5%E3%82%A2/dp/B085CH14TB",
-    "https://www.amazon.co.jp/-/en/Spirits-Doraemon-Selection-Approximately-Pre-painted/dp/B084HQ6CHX/ref=pd_lpo_21_img_1/358-5152328-6019449?_encoding=UTF8&pd_rd_i=B084HQ6CHX&pd_rd_r=f6f73248-59bd-4b10-a1b6-4becf4e1a427&pd_rd_w=9V4TA&pd_rd_wg=phLQN&pf_rd_p=dc0198fa-c371-4787-b1e2-96ed0e4d45e8&pf_rd_r=A1G0AFGRF5FBFF3ZF7FC&psc=1&refRID=A1G0AFGRF5FBFF3ZF7FC"
-]
+NEWS_URL = 'https://cu.unisys.co.jp'
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -114,14 +98,17 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, template_message)
 
     elif content == "ニュース教えて！":
-        logging.info("ニュースのクローリングを開始します。")
         ###########################################
         #       ニュースをクローリングする処理         #
+        logging.info("ニュースのクローリングを開始します。")
+        titles, urls, imgs = news_scraiping(NEWS_URL)
+        logging.info("ニュースのクローリングが終了しました")
+        logging.info(f"titleのサンプル{titles[0:2]}")
         ###########################################
-        with open('./news.json') as f:
-            message = json.load(f)
 
         # ニュースを更新する処理
+        with open('./news.json') as f:
+            message = json.load(f)
         logging.info("ニュースの更新を開始します")
         message = change_news(message, imgs, titles, urls)
         # make_news(message)
@@ -132,6 +119,7 @@ def handle_message(event):
             # alt_textがないとエラーになるので注意
             FlexSendMessage(alt_text='ニュース', contents=message)
         )
+
     ################ 自然言語解析 ##################
     else:
         az = AzureNlp()

@@ -8,4 +8,4 @@ requests
 pandas
 azure-ai-textanalytics
 beautifulsoup4
-
+lxml

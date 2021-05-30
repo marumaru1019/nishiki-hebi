@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import re
 
 import azure.functions as func
 from linebot import LineBotApi, WebhookHandler
@@ -25,6 +26,7 @@ from linebot.models import (
 from component.kintone import *
 from component.azure_nlp import *
 from component.news import *
+from component.tips import *
 
 import requests
 import time
@@ -37,23 +39,7 @@ channel_secret = os.environ['CHANNEL_SECRET']
 line_bot_api = LineBotApi(access_token)
 handler = WebhookHandler(channel_secret)
 
-imgs = [
-    "https://www.tv-asahi.co.jp/doraemon/cast/img/nobita.jpg",
-    "https://www.tv-asahi.co.jp/doraemon/cast/img/nobita.jpg",
-    "https://www.tv-asahi.co.jp/doraemon/cast/img/shizuka.jpg"
-]
-
-titles = [
-    "サンプル8",
-    "サンプル9",
-    "サンプル10"
-]
-
-urls = [
-    "https://www.tv-asahi.co.jp/doraemon/cast/",
-    "https://www.amazon.co.jp/%E3%83%95%E3%82%A3%E3%82%AE%E3%83%A5%E3%82%A2%E3%83%BC%E3%83%84ZERO-%E3%83%89%E3%83%A9%E3%81%88%E3%82%82%E3%82%93-STAND-%E7%B4%84250mm-%E5%A1%97%E8%A3%85%E6%B8%88%E3%81%BF%E5%AE%8C%E6%88%90%E5%93%81%E3%83%95%E3%82%A3%E3%82%AE%E3%83%A5%E3%82%A2/dp/B085CH14TB",
-    "https://www.amazon.co.jp/-/en/Spirits-Doraemon-Selection-Approximately-Pre-painted/dp/B084HQ6CHX/ref=pd_lpo_21_img_1/358-5152328-6019449?_encoding=UTF8&pd_rd_i=B084HQ6CHX&pd_rd_r=f6f73248-59bd-4b10-a1b6-4becf4e1a427&pd_rd_w=9V4TA&pd_rd_wg=phLQN&pf_rd_p=dc0198fa-c371-4787-b1e2-96ed0e4d45e8&pf_rd_r=A1G0AFGRF5FBFF3ZF7FC&psc=1&refRID=A1G0AFGRF5FBFF3ZF7FC"
-]
+NEWS_URL = 'https://cu.unisys.co.jp'
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -84,6 +70,7 @@ def handle_message(event):
     #WARNING: kintone token must set under handle_message
     kintone_endpoint = os.environ['KINTONE_URL']
     kintone_token = os.environ['KINTONE_TOKEN']
+    kintone_token2 = os.environ['KINTONE_TOKEN2']
     content = event.message.text
     user_id = event.source.user_id
     profile = line_bot_api.get_profile(event.source.user_id)
@@ -114,14 +101,17 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, template_message)
 
     elif content == "ニュース教えて！":
-        logging.info("ニュースのクローリングを開始します。")
         ###########################################
         #       ニュースをクローリングする処理         #
+        logging.info("ニュースのクローリングを開始します。")
+        titles, urls, imgs = news_scraiping(NEWS_URL)
+        logging.info("ニュースのクローリングが終了しました")
+        logging.info(f"titleのサンプル{titles[0:2]}")
         ###########################################
-        with open('./news.json') as f:
-            message = json.load(f)
 
         # ニュースを更新する処理
+        with open('./news.json') as f:
+            message = json.load(f)
         logging.info("ニュースの更新を開始します")
         message = change_news(message, imgs, titles, urls)
         # make_news(message)
@@ -132,6 +122,64 @@ def handle_message(event):
             # alt_textがないとエラーになるので注意
             FlexSendMessage(alt_text='ニュース', contents=message)
         )
+
+    # 自己紹介用のフォーマット
+    elif "の名前は" in content:
+        try:
+            message = f'あなたの名前は{content.replace("私の名前は","").replace("だよ！","")}だね！\nこれからよろしくね！'
+            logging.info("名前を登録中")
+            params = selfintro_params(
+                line_name=user_name, line_id=user_id, name=content.replace("私の名前は", "").replace("だよ！", ""), ID=user_id)
+            q_input(kintone_endpoint, kintone_token2, params)
+
+        except:
+            message = "自己紹介のフォーマットが間違っているよ😭"
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=message))
+
+    elif content == "Tips教えて！":
+        message = get_tips()
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=message))
+
+    # # 質問対応
+    # elif "Q学業" in content or "Q内定" in content or "Qプライベート" in content or "Qその他" in content:
+    #     if len(content) < 2:
+    #         message1 = "質問のフォーマットが間違っているよ😭"
+    #         message2 = "もう一度質問を押すから質問してみてね！"
+
+    #     elif len(content) >= 2:
+    #         category, element = re.split('[:：]', content, 1)
+    elif re.split('[:：]', content, 1)[0] in {'Q学業', 'Q内定', 'Qプライベート', 'Qその他'}:
+        li = re.split('[:：]', content, 1)
+        if len(li) != 2:
+            message1 = '質問のフォーマットが間違っているよ😭'
+            message2 = 'もう一度質問を押すから質問してみてね！'
+        else:
+            category, element = li
+            logging.info('質問内容を保存します。')
+            if "学業" in category:
+                category = "学業"
+            elif "内定" in category:
+                category = "内定"
+            elif "プライベート" in category:
+                category = "プライベート"
+            else:
+                category = "その他"
+            # データベースの保存処理
+            params = q_params(
+                line_name=user_name, line_id=user_id, contents= element, category=category, sub1="", sub2="")
+            q_input(kintone_endpoint, kintone_token, params)
+            logging.info("質問内容を保存しました")
+
+            message1 = f"{user_name}さん、質問をくれてありがとう！"
+            message2 = "ゆにしすちゃんで大事に預かるね😊"
+
+        line_bot_api.reply_message(
+            event.reply_token, [TextSendMessage(text=message1), TextSendMessage(text=message2)])
+
     ################ 自然言語解析 ##################
     else:
         az = AzureNlp()
@@ -162,12 +210,15 @@ def handle_postback(event):
     #WARNING: kintone token must set under handle_message
     kintone_endpoint = os.environ['KINTONE_URL']
     kintone_token = os.environ['KINTONE_TOKEN']
+    kintone_token2 = os.environ['KINTONE_TOKEN2']
     user_id = event.source.user_id
     profile = line_bot_api.get_profile(event.source.user_id)
     user_name = profile.display_name
     data = event.postback.data
 
     if data in ["学業", "内定", "プライベート", "その他"]:
-        message = "質問内容を記入してください"
+        message1 = "以下のフォーマットに従って質問をしてね♫"
+        message2 = f"Q{data}：質問内容"
         line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=message))
+            event.reply_token, [TextSendMessage(text=message1), TextSendMessage(text=message2)])
+

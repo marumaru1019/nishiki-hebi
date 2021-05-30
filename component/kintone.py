@@ -3,21 +3,50 @@ import time
 import logging
 
 # import data into kinto db
-def q_params(name, contents, line_id, category):
+
+
+def q_params(line_name, line_id, contents, category="non", sub1="", sub2=""):
     PARAMS = {
         "app": 1,
         "record": {
-            "name": {
-                "value": name
-            },
-            "contents": {
-                "value": contents
+            "line_name": {
+                "value": line_name
             },
             "line_id": {
                 "value": line_id
             },
+            "contents": {
+                "value": contents
+            },
             "category": {
                 "value": category
+            },
+            "sub1": {
+                "value": sub1
+            },
+            "sub2": {
+                "value": sub2
+            }
+        }
+    }
+    return PARAMS
+
+
+def selfintro_params(line_name, line_id, name, ID):
+    PARAMS = {
+        "app": 7,
+        "record": {
+            "line_name": {
+                "value": line_name
+            },
+            "line_id": {
+                "value": line_id
+            },
+            "name": {
+                "value": name
+            },
+            "ID": {
+                "value": ID
             }
         }
     }
@@ -31,7 +60,10 @@ def q_post(url, api_token, params):
 
     return resp
 
+
 def q_input(kintone_endpoint, api_token, params):
     RESP = q_post(kintone_endpoint, api_token, params)
     time.sleep(0.5)
-    logging.info("create data!")
+    print(RESP.text)
+
+
